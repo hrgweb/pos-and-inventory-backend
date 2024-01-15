@@ -21,8 +21,36 @@ class ProductTest extends TestCase
             'stock_qty' => $this->faker->numberBetween(20, 70),
             'reorder_level' => $this->faker->numberBetween(20, 70),
             'is_available' => $this->faker->randomElement([true, false])
-        ])->save();
+        ])->saveOrUpdate();
 
         $this->assertDatabaseCount('products', 1);
+    }
+
+    public function test_update_a_product(): void
+    {
+        // Save
+        $product = ProductService::make([
+            'name' => 'hergen',
+            'description' => 'sample test',
+            'selling_price' => 12,
+            'stock_qty' => 5,
+            'reorder_level' => 43,
+            'is_available' => true,
+        ])->saveOrUpdate();
+
+        $data = [
+            'id' => $product->id,
+            'name' => 'john doe',
+            'description' => 'this is just another testing',
+            'selling_price' => 92,
+            'stock_qty' => 15,
+            'reorder_level' => 30,
+            'is_available' => false,
+        ];
+
+        // Update
+        ProductService::make($data)->saveOrUpdate();
+
+        $this->assertDatabaseHas('products', $data);
     }
 }

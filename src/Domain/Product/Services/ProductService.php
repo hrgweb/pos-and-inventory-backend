@@ -15,8 +15,14 @@ class ProductService
         return new static(...$params);
     }
 
-    public function save()
+    public function saveOrUpdate()
     {
-        return Product::create($this->request);
+        $id = $this->request['id'] ??= 0;
+
+        if ($id <= 0) {
+            return Product::create($this->request);
+        }
+
+        return Product::where('id', $id)->update($this->request);
     }
 }
