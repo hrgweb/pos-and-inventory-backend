@@ -17,6 +17,11 @@ class ProductService
         return new static(...$params);
     }
 
+    public function list()
+    {
+        return ProductData::collection(Product::paginate());
+    }
+
     public function saveOrUpdate(): ProductData
     {
         $id = $this->request['id'] ??= 0;

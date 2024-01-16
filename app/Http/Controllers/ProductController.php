@@ -9,6 +9,17 @@ use Inventory\Product\Services\ProductService;
 
 class ProductController extends Controller
 {
+    public function index()
+    {
+        try {
+            $products = ProductService::make()->list();
+            return response()->json($products, 200);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['success' => false], 500);
+        }
+    }
+
     public function store(ProductData $data)
     {
         try {

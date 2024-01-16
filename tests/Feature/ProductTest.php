@@ -2,17 +2,27 @@
 
 namespace Tests\Feature;
 
-use Exception;
 use Tests\TestCase;
 use App\Models\Product;
 use Illuminate\Foundation\Testing\WithFaker;
-use Inventory\Product\Services\ProductService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inventory\Product\Dto\ProductData;
 
 class ProductTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
+
+    public function test_list_of_products(): void
+    {
+        Product::factory(23)->create();
+
+        $this->getJson('api/products')
+            ->assertStatus(200);
+
+        Product::factory()->create();
+
+        $this->assertDatabaseCount('products', 24);
+    }
 
     public function test_create_a_product(): void
     {
