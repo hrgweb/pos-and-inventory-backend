@@ -2,7 +2,9 @@
 
 namespace Inventory\Product\Services;
 
+use Exception;
 use App\Models\Product;
+use Inventory\Product\Dto\ProductData;
 
 class ProductService
 {
@@ -15,14 +17,23 @@ class ProductService
         return new static(...$params);
     }
 
-    public function saveOrUpdate()
+    public function saveOrUpdate(): ProductData
     {
         $id = $this->request['id'] ??= 0;
 
-        if ($id <= 0) {
-            return Product::create($this->request);
+        if (!$id) {
+            return ProductData::from(Product::create($this->request));
         }
 
-        return Product::where('id', $id)->update($this->request);
+        $update = Product::where('id', $id)->update($this->request);
+
+        if ($update) {
+            return ProductData::from($this->request);
+        }
+    }
+
+    public function remove()
+    {
+        Product::where('id', $this->request['id'])->delete();
     }
 }

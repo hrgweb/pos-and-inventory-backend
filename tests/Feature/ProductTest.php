@@ -2,55 +2,60 @@
 
 namespace Tests\Feature;
 
+use Exception;
 use Tests\TestCase;
 use App\Models\Product;
 use Illuminate\Foundation\Testing\WithFaker;
 use Inventory\Product\Services\ProductService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inventory\Product\Dto\ProductData;
 
 class ProductTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
 
-    public function test_create_a_new_product(): void
+    public function test_create_a_product(): void
     {
-        ProductService::make([
-            'name' => $this->faker->sentence(),
-            'description' => $this->faker->paragraph(),
-            'selling_price' => $this->faker->numberBetween(90, 200),
-            'stock_qty' => $this->faker->numberBetween(20, 70),
-            'reorder_level' => $this->faker->numberBetween(20, 70),
-            'is_available' => $this->faker->randomElement([true, false])
-        ])->saveOrUpdate();
+        $productData = Product::factory()->make();
 
-        $this->assertDatabaseCount('products', 1);
+        $data = $productData->toArray();
+
+        $this->postJson('/api/products', $data)
+            ->assertStatus(201);
+
+        Product::factory()->create();
+
+        $this->assertDatabaseCount('products', 2);
     }
 
     public function test_update_a_product(): void
     {
-        // Save
-        $product = ProductService::make([
-            'name' => 'hergen',
-            'description' => 'sample test',
-            'selling_price' => 12,
-            'stock_qty' => 5,
-            'reorder_level' => 43,
-            'is_available' => true,
-        ])->saveOrUpdate();
+        $product = ProductData::from(Product::factory()->create());
 
-        $data = [
-            'id' => $product->id,
-            'name' => 'john doe',
-            'description' => 'this is just another testing',
-            'selling_price' => 92,
-            'stock_qty' => 15,
-            'reorder_level' => 30,
-            'is_available' => false,
-        ];
+        $data = array_merge($product->toArray(), [
+            'name' => 'hergen test',
+            'description' => 'just a sample testing!',
+            'selling_price' => 12.0,
+            'stock_qty' => 3,
+            'reorder_level' => 4,
+            'is_available' => true
+        ]);
 
-        // Update
-        ProductService::make($data)->saveOrUpdate();
+        $this->putJson("api/products/{$data['id']}", $data)
+            ->assertStatus(201)
+            ->assertJson(['success' => true]);
 
-        $this->assertDatabaseHas('products', $data);
+        $lastProduct = ProductData::from(Product::latest()->first())?->toArray();
+
+        $this->assertEquals($lastProduct, $data);
+    }
+
+    public function test_remove_a_product(): void
+    {
+        $product = Product::factory()->create();
+
+        $this->deleteJson("/api/products/{$product['id']}")
+            ->assertStatus(200)
+            ->assertJson(['success' => true]);
     }
 }
