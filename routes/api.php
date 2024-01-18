@@ -1,11 +1,13 @@
 <?php
 
+use Illuminate\Http\Request;
+use App\Models\TransactionSession;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OrderController;
+use Inventory\Order\Services\OrderService;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TestingController;
 use App\Http\Controllers\TransactionSessionController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,6 +23,17 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
+
+// Data
+Route::get('/data', function (Request $request) {
+    $transactionSessionNo = $request->input('transaction_session_no');
+
+    return [
+        'transaction_session' => TransactionSession::select(['session_no', 'status', 'grand_total', 'amount', 'change', 'created_at'])->where('session_no', $transactionSessionNo)->first(),
+        'orders' => OrderService::fetch($transactionSessionNo),
+        'suppliers' => [] // SupplierService::all()
+    ];
+})->name('data');
 
 // Transaction Session
 Route::apiResource('transaction_sessions', TransactionSessionController::class);

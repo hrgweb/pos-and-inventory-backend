@@ -19,6 +19,11 @@ class OrderService
         return new static(...$params);
     }
 
+    public static function fetch($transactionSessionNo = ''): mixed
+    {
+        return OrderData::collection(Order::where('transaction_session_no', $transactionSessionNo)->get());
+    }
+
     public function save(): OrderData
     {
         $product = $this->request['product'];

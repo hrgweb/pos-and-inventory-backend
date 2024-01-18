@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use App\Models\Order;
+use App\Models\TransactionSession;
 use Inventory\Order\Dto\OrderData;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -12,12 +13,17 @@ class PosTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_get_transaction_session_data(): void
+    public function test_fetch_transaction_session_orders_and_suppliers(): void
     {
-        $this->postJson(route('transaction_sessions.store'), [])->assertCreated()
-            ->assertJson(['id' => 1]);
+        $transaction_session = TransactionSession::factory()->create(['session_no' => '98424233']);
 
-        $this->assertDatabaseHas('transaction_sessions', ['id' => 1]);
+        $orders = Order::factory(4)->create(['transaction_session_no' => '98424233']);
+
+        $this->getJson(route('data', ['transaction_session_no' => $transaction_session->session_no]))
+            ->assertOk();
+
+        $this->assertDatabaseHas('transaction_sessions', ['session_no' => '98424233']);
+        $this->assertEquals(4, $orders->count());
     }
 
     public function test_pos_make_an_order(): void
