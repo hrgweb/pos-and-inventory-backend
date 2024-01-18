@@ -20,4 +20,17 @@ class SupplierTest extends TestCase
 
         $this->assertEquals($data['name'], $response['name']);
     }
+
+    public function test_update_a_supplier(): void
+    {
+        $data = Supplier::factory()->create();
+
+        $this->putJson(route('suppliers.update', $data['id']), [
+            'name' => 'updated megasoft',
+            'address' => 'updated address'
+        ])
+            ->assertCreated();
+
+        $this->assertDatabaseHas('suppliers', ['name' => 'updated megasoft']);
+    }
 }

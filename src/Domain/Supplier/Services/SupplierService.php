@@ -30,27 +30,21 @@ class SupplierService
 
     public function saveOrUpdate(): SupplierData
     {
+        // check if it has supplier then update
+        if ($this->request['id'] > 0) {
+            Supplier::where('id', $this->request['id'])->update($this->request);
+
+            Log::info('supplier (' . $this->request['name'] . ') was successfuly updated.');
+
+            return SupplierData::from($this->request);
+        }
+
+        // else create
         $supplier =  Supplier::create($this->request);
 
         Log::info('new supplier (' . $this->request['name'] . ') saved.');
 
         return SupplierData::from($supplier)->additional(['created_at' => $supplier->created_at]);
-    }
-
-    public function update(int $id): bool
-    {
-        $update = Supplier::where('id', $id)->update([
-            'name' => $this->request['name'],
-            'description' => $this->request['description'],
-        ]);
-
-        if (!$update) {
-            throw new Exception('no supplier updated. encountered an error.');
-        }
-
-        Log::info('supplier (' . $this->request['name'] . ') was successfuly updated.');
-
-        return true;
     }
 
     public function remove(int $id) //: bool

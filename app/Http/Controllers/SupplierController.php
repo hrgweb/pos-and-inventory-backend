@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Supplier;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -15,6 +16,19 @@ class SupplierController extends Controller
         try {
             $product = SupplierService::make($data->toArray())->saveOrUpdate();
             return response()->json($product, 201);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json($e->getMessage(), 500);
+        }
+    }
+
+    public function update(Request $request, int $id)
+    {
+        try {
+            $data = SupplierData::from(array_merge($request->all(), ['id' => $id]));
+
+            $supplier = SupplierService::make($data->toArray())->saveOrUpdate();
+            return response()->json($supplier, 201);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json($e->getMessage(), 500);
