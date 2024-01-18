@@ -61,6 +61,17 @@ class ProductTest extends TestCase
         $this->assertDatabaseMissing('products', ['name' => $product->name]);
     }
 
+    public function test_find_product_by_name_or_barcode(): void
+    {
+        Product::factory()->create(['name' => 'tanduay', 'barcode' => '5803352818140']);
+        Product::factory()->create(['name' => 'buko', 'barcode' => '3103352818140']);
+
+        $response = $this->getJson(route('products.lookup', ['search' => '3103352818140']))
+            ->assertOk();
+
+        $this->assertEquals(1, count($response->json()));
+    }
+
     // public function test_user_must_be_authenticated(): void
     // {
     //     $user = User::factory()->create();

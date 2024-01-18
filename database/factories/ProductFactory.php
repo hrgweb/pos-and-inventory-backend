@@ -22,6 +22,7 @@ class ProductFactory extends Factory
             'selling_price' => fake()->numberBetween(90, 200),
             'stock_qty' => fake()->numberBetween(20, 70),
             'reorder_level' => fake()->numberBetween(20, 70),
+            'barcode' => fake()->ean13(),
             'is_available' => fake()->randomElement([true, false]),
         ];
     }

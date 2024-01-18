@@ -61,4 +61,15 @@ class ProductController extends Controller
             return response()->json($e->getMessage(), 500);
         }
     }
+
+    public function lookup(Request $request)
+    {
+        try {
+            $result = ProductService::make($request->all())->lookup();
+            return response()->json($result, 200);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json($e->getMessage(), 500);
+        }
+    }
 }

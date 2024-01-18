@@ -45,4 +45,14 @@ class ProductService
             throw new Exception('no product found on this id');
         }
     }
+
+    public function lookup()
+    {
+        $search = "{$this->request['search']}%";
+
+        return Product::query()
+            ->whereRaw('name like ?', [$search])
+            ->OrWhereRaw('barcode like ?', [$search])
+            ->get();
+    }
 }
