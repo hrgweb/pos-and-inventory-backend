@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OrderController;
 use Inventory\Order\Services\OrderService;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\TestingController;
+use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\TransactionSessionController;
 
 /*
@@ -45,5 +45,5 @@ Route::apiResource('products', ProductController::class);
 // Order
 Route::apiResource('orders', OrderController::class);
 
-// Testing
-Route::apiResource('testing.comment', TestingController::class);//->shallow();
+// Supplier
+Route::apiResource('suppliers', SupplierController::class);
