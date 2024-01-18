@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Exception;
 use App\Models\Product;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Inventory\Product\Dto\ProductData;
 use Inventory\Product\Services\ProductService;
@@ -37,11 +38,13 @@ class ProductController extends Controller
         }
     }
 
-    public function update(ProductData $data)
+    public function update(Request $request, Product $product)
     {
         try {
-            $data = ProductService::make($data->toArray())->saveOrUpdate();
-            return response()->json(array_merge($data->toArray(), ['success' => true]), 201);
+            $data = ProductData::from(array_merge($product->toArray(), $request->all()));
+
+            $result = ProductService::make($data->toArray())->saveOrUpdate();
+            return response()->json($result->toArray(), 201);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json($e->getMessage(), 500);

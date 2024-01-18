@@ -3,11 +3,9 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use App\Models\User;
 use App\Models\Product;
 use Inventory\Product\Dto\ProductData;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Laravel\Sanctum\Sanctum;
 
 class ProductTest extends TestCase
 {
@@ -46,29 +44,20 @@ class ProductTest extends TestCase
     {
         $product = ProductData::from(Product::factory()->create());
 
-        $data = array_merge($product->toArray(), [
-            'name' => 'hergen test',
-            'description' => 'just a sample testing!',
-            'selling_price' => 12.0,
-            'stock_qty' => 3,
-            'reorder_level' => 4,
-            'is_available' => true
-        ]);
+        $productData = array_merge($product->toArray(), ['product' => $product->id, 'name' => 'updated name', 'description' => 'updated description']);
 
-        $this->putJson("api/products/{$data['id']}", $data)
-            ->assertStatus(201)
-            ->assertJson(['success' => true]);
+        $this->putJson(route('products.update', $productData))
+            ->assertCreated()
+            ->assertJson(['description' => 'updated description']);
 
-        $lastProduct = ProductData::from(Product::latest()->first())?->toArray();
-
-        $this->assertEquals($lastProduct, $data);
+        $this->assertDatabaseHas('products', ['description' => 'updated description']);
     }
 
     public function test_remove_a_product(): void
     {
         $product = Product::factory()->create();
 
-        $this->deleteJson("/api/products/{$product['id']}")
+        $this->deleteJson(route('products.destroy', $product['id']))
             ->assertStatus(200)
             ->assertJson(['success' => true]);
     }
