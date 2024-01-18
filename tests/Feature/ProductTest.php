@@ -44,7 +44,11 @@ class ProductTest extends TestCase
     {
         $product = ProductData::from(Product::factory()->create());
 
-        $this->putJson(route('products.update', $product->id), ['product' => $product->id, 'name' => 'updated name', 'description' => 'updated description'])
+        $this->putJson(route('products.update', $product->id), [
+            'id' => $product->id,
+            'name' => 'updated name',
+            'description' => 'updated description'
+        ])
             ->assertCreated()
             ->assertJson(['description' => 'updated description']);
 

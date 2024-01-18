@@ -38,10 +38,10 @@ class ProductController extends Controller
         }
     }
 
-    public function update(Request $request, Product $product)
+    public function update(Request $request, int $id)
     {
         try {
-            $data = ProductData::from(array_merge($product->toArray(), $request->all()));
+            $data = ProductData::from(array_merge($request->all(), ['id' => $id]));
 
             $result = ProductService::make($data->toArray())->saveOrUpdate();
             return response()->json($result->toArray(), 201);
