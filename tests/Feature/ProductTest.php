@@ -3,39 +3,42 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
+use App\Models\User;
 use App\Models\Product;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inventory\Product\Dto\ProductData;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
 
 class ProductTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+    use RefreshDatabase;
 
     public function test_list_of_products(): void
     {
-        Product::factory(23)->create();
+        Product::factory(2)->create();
 
-        $this->getJson('api/products')
-            ->assertStatus(200);
+        $response = $this->getJson(route('products.index'))->assertOk();
 
-        Product::factory()->create();
+        $this->assertEquals(2, count($response['data']));
+    }
 
-        $this->assertDatabaseCount('products', 24);
+    public function test_find_a_product():void
+    {
+        $product = Product::factory()->create(['name' => 'tanduay']);
+
+        $response = $this->getJson(route('products.show', $product->id))->assertOk();
+
+        $this->assertEquals($product->name, $response['name']);
     }
 
     public function test_create_a_product(): void
     {
-        $productData = Product::factory()->make();
+        $productData = Product::factory()->make()->toArray();
 
-        $data = $productData->toArray();
+        $response = $this->postJson(route('products.store'), $productData)
+            ->assertCreated();
 
-        $this->postJson('/api/products', $data)
-            ->assertStatus(201);
-
-        Product::factory()->create();
-
-        $this->assertDatabaseCount('products', 2);
+        $this->assertEquals($productData['name'], $response['name']);
     }
 
     public function test_update_a_product(): void
@@ -68,4 +71,14 @@ class ProductTest extends TestCase
             ->assertStatus(200)
             ->assertJson(['success' => true]);
     }
+
+    // public function test_user_must_be_authenticated(): void
+    // {
+    //     $user = User::factory()->create();
+
+    //     Sanctum::actingAs($user);
+
+    //     $this->get('/login')
+    //         ->assertOk();
+    // }
 }
