@@ -3,6 +3,7 @@
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TestingController;
+use App\Http\Controllers\TransactionSessionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,6 +21,9 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
+
+// Transaction Session
+Route::apiResource('transaction_sessions', TransactionSessionController::class);
 
 // Product
 Route::get('/products/lookup', [ProductController::class, 'lookup'])->name('products.lookup');
