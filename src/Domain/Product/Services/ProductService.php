@@ -39,6 +39,10 @@ class ProductService
 
     public function remove()
     {
-        Product::where('id', $this->request['id'])->delete();
+        $product = Product::where('id', $this->request['id'])->delete();
+
+        if (!$product) {
+            throw new Exception('no product found on this id');
+        }
     }
 }
