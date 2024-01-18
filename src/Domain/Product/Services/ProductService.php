@@ -26,15 +26,15 @@ class ProductService
     {
         $id = $this->request['id'] ??= 0;
 
-        if (!$id) {
-            return ProductData::from(Product::create($this->request));
+        if ($id > 0) {
+            $update = Product::where('id', $id)->update($this->request);
+
+            if ($update) {
+                return ProductData::from($this->request);
+            }
         }
 
-        $update = Product::where('id', $id)->update($this->request);
-
-        if ($update) {
-            return ProductData::from($this->request);
-        }
+        return ProductData::from(Product::create($this->request));
     }
 
     public function remove()

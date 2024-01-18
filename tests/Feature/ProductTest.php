@@ -22,7 +22,7 @@ class ProductTest extends TestCase
         $this->assertEquals(2, count($response['data']));
     }
 
-    public function test_find_a_product():void
+    public function test_find_a_product(): void
     {
         $product = Product::factory()->create(['name' => 'tanduay']);
 
@@ -34,6 +34,7 @@ class ProductTest extends TestCase
     public function test_create_a_product(): void
     {
         $productData = Product::factory()->make()->toArray();
+        // $productData = ['name' => 'hrg', 'selling_price' => 3, 'stock_qty' => 11, 'reorder_level' => 18, 'is_available' => true];
 
         $response = $this->postJson(route('products.store'), $productData)
             ->assertCreated();

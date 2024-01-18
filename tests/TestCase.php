@@ -13,5 +13,6 @@ abstract class TestCase extends BaseTestCase
         parent::setUp();
 
         $this->withoutExceptionHandling();
+        // $this->withoutDeprecationHandling();
     }
 }

@@ -7,7 +7,6 @@ use App\Models\Product;
 use Illuminate\Support\Facades\Log;
 use Inventory\Product\Dto\ProductData;
 use Inventory\Product\Services\ProductService;
-use Symfony\Component\HttpFoundation\Response;
 
 class ProductController extends Controller
 {
@@ -34,7 +33,7 @@ class ProductController extends Controller
             return response()->json($product, 201);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['success' => false], 500);
+            return response()->json($e->getMessage(), 500);
         }
     }
 
@@ -45,7 +44,7 @@ class ProductController extends Controller
             return response()->json(array_merge($data->toArray(), ['success' => true]), 201);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['success' => false], 500);
+            return response()->json($e->getMessage(), 500);
         }
     }
 
@@ -56,7 +55,7 @@ class ProductController extends Controller
             return response()->json(['success' => true], 200);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['success' => false], 500);
+            return response()->json($e->getMessage(), 500);
         }
     }
 }
