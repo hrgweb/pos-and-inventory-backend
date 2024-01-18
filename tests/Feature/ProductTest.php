@@ -44,9 +44,7 @@ class ProductTest extends TestCase
     {
         $product = ProductData::from(Product::factory()->create());
 
-        $productData = array_merge($product->toArray(), ['product' => $product->id, 'name' => 'updated name', 'description' => 'updated description']);
-
-        $this->putJson(route('products.update', $productData))
+        $this->putJson(route('products.update', $product->id), ['product' => $product->id, 'name' => 'updated name', 'description' => 'updated description'])
             ->assertCreated()
             ->assertJson(['description' => 'updated description']);
 
@@ -58,8 +56,9 @@ class ProductTest extends TestCase
         $product = Product::factory()->create();
 
         $this->deleteJson(route('products.destroy', $product['id']))
-            ->assertStatus(200)
-            ->assertJson(['success' => true]);
+            ->assertNoContent();
+
+        $this->assertDatabaseMissing('products', ['name' => $product->name]);
     }
 
     // public function test_user_must_be_authenticated(): void

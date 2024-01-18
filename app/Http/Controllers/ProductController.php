@@ -55,7 +55,7 @@ class ProductController extends Controller
     {
         try {
             ProductService::make(['id' => $id])->remove();
-            return response()->json(['success' => true], 200);
+            return response()->json([], 204);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json($e->getMessage(), 500);
