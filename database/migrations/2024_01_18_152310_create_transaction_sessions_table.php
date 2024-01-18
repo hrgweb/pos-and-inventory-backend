@@ -17,7 +17,7 @@ return new class extends Migration
             $table->decimal('grand_total', 15, 2)->nullable();
             $table->decimal('amount', 15, 2)->nullable();
             $table->decimal('change', 15, 2)->nullable();
-            $table->string('status')->default('pending');    // eg. pending, completed
+            $table->enum('status', ['pending', 'completed', 'void'])->default('pending');    // eg. pending, completed, void
             $table->timestamps();
         });
     }

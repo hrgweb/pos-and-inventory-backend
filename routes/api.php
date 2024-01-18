@@ -7,6 +7,7 @@ use App\Http\Controllers\OrderController;
 use Inventory\Order\Services\OrderService;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\TransactionSessionController;
 
 /*
@@ -47,3 +48,6 @@ Route::apiResource('orders', OrderController::class);
 
 // Supplier
 Route::apiResource('suppliers', SupplierController::class);
+
+// Transaction
+Route::post('/transactions/void', [TransactionController::class, 'void'])->name('transactions.void');

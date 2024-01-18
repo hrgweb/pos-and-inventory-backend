@@ -20,13 +20,12 @@ return new class extends Migration
 
             // Products
             $table->string('product_name')->nullable()->index();
-            $table->string('product_description')->nullable();
+            $table->text('product_description')->nullable();
             $table->decimal('selling_price', 15, 2);
             $table->integer('qty')->nullable();
             $table->decimal('subtotal', 15, 2)->nullable();
 
             $table->enum('status', ['pending', 'completed', 'void'])->nullable();   // (e.g., pending, completed, void).
-            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }
