@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TestingController;
 use Illuminate\Http\Request;
@@ -23,6 +24,9 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 // Product
 Route::get('/products/lookup', [ProductController::class, 'lookup'])->name('products.lookup');
 Route::apiResource('products', ProductController::class);
+
+// Order
+Route::apiResource('orders', OrderController::class);
 
 // Testing
 Route::apiResource('testing.comment', TestingController::class);//->shallow();
