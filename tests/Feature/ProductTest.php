@@ -47,10 +47,11 @@ class ProductTest extends TestCase
         $this->putJson(route('products.update', $product->id), [
             'id' => $product->id,
             'name' => 'updated name',
-            'description' => 'updated description'
+            'description' => 'updated description',
+            'cost_price' => 3.50
         ])
             ->assertCreated()
-            ->assertJson(['description' => 'updated description']);
+            ->assertJson(['description' => 'updated description', 'cost_price' => 3.50]);
 
         $this->assertDatabaseHas('products', ['description' => 'updated description']);
     }

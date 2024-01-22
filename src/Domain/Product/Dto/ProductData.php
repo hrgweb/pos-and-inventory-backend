@@ -10,6 +10,7 @@ class ProductData extends Data
         public ?int $id,
         public string $name,
         public ?string $description,
+        public ?float $cost_price,
         public ?float $selling_price,
         public ?int $stock_qty,
         public ?int $reorder_level,

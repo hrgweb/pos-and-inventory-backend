@@ -19,6 +19,7 @@ class ProductFactory extends Factory
         return [
             'name' => fake()->sentence(),
             'description' => fake()->paragraph(),
+            'cost_price' => fake()->numberBetween(80, 190),
             'selling_price' => fake()->numberBetween(90, 200),
             'stock_qty' => fake()->numberBetween(20, 70),
             'reorder_level' => fake()->numberBetween(20, 70),

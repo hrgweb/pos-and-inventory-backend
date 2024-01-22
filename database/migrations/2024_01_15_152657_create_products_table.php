@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name')->index();
             $table->text('description')->nullable();
+            $table->decimal('cost_price', 15, 2);
             $table->decimal('selling_price', 15, 2);
             $table->unsignedBigInteger('stock_qty');
             $table->unsignedBigInteger('reorder_level');
