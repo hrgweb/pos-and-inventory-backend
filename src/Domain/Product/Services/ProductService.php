@@ -4,6 +4,7 @@ namespace Inventory\Product\Services;
 
 use Exception;
 use App\Models\Product;
+use Illuminate\Support\Facades\Log;
 use Inventory\Product\Dto\ProductData;
 
 class ProductService
@@ -39,11 +40,7 @@ class ProductService
 
     public function remove()
     {
-        $product = Product::where('id', $this->request['id'])->delete();
-
-        if (!$product) {
-            throw new Exception('no product found on this id');
-        }
+        return Product::destroy($this->request['id']);
     }
 
     public function lookup()
