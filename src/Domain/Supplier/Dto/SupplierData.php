@@ -11,7 +11,7 @@ class SupplierData extends Data
         public string $name,
         public ?string $description,
         public ?string $address,
-        public ?string $phone_no
+        public ?string $contact_no
     ) {
     }
 }

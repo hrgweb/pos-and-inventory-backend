@@ -49,11 +49,7 @@ class SupplierService
 
     public function remove(int $id) //: bool
     {
-        $remove = Supplier::where('id', $id)->delete();
-
-        if (!$remove) {
-            throw new Exception('no supplier was removed. encountered an error.');
-        }
+        Supplier::destroy($id);
 
         Log::info('1 supplier ' . $this->request['name'] . ' was successfuly removed.');
 
