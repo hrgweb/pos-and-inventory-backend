@@ -11,7 +11,7 @@ class SupplierTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_list_of_suppliers():void
+    public function test_list_of_suppliers(): void
     {
         Supplier::factory(4)->create();
 
@@ -32,21 +32,18 @@ class SupplierTest extends TestCase
 
     public function test_update_a_supplier(): void
     {
-        $data = Supplier::factory()->create();
+        $supplier = Supplier::factory()->create();
 
-        $this->putJson(route('suppliers.update', $data['id']), [
+        $data = [
             'name' => 'updated megasoft',
             'description' => 'update nato',
             'address' => 'updated address',
             'contact_no' => 'update sad nato and contact'
-        ])
+        ];
+
+        $this->putJson(route('suppliers.update', $supplier['id']), $data)
             ->assertCreated();
 
-        $this->assertDatabaseHas('suppliers', [
-            'name' => 'updated megasoft',
-            'description' => 'update nato',
-            'address' => 'updated address',
-            'contact_no' => 'update sad nato and contact'
-        ]);
+        $this->assertDatabaseHas('suppliers', $data);
     }
 }
