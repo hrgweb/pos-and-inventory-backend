@@ -46,4 +46,13 @@ class SupplierTest extends TestCase
 
         $this->assertDatabaseHas('suppliers', $data);
     }
+
+    public function test_remove_a_supplier(): void
+    {
+        $supplier = Supplier::factory()->create();
+
+        $this->deleteJson(route('suppliers.destroy', $supplier->id), $supplier->toArray())
+            ->assertOk()
+            ->assertJson(['success' => true]);
+    }
 }

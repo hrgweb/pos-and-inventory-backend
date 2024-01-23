@@ -44,4 +44,14 @@ class SupplierController extends Controller
             return response()->json($e->getMessage(), 500);
         }
     }
+
+    public function destroy(int $id)
+    {
+        try {
+            return SupplierService::make(request()->all())->remove($id);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json($e->getMessage(), 500);
+        }
+    }
 }

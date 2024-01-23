@@ -47,12 +47,12 @@ class SupplierService
         return SupplierData::from($supplier)->additional(['created_at' => $supplier->created_at]);
     }
 
-    public function remove(int $id) //: bool
+    public function remove(int $id): array
     {
         Supplier::destroy($id);
 
         Log::info('1 supplier ' . $this->request['name'] . ' was successfuly removed.');
 
-        return true;
+        return ['success' => true];
     }
 }
