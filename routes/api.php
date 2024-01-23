@@ -37,7 +37,7 @@ Route::get('/data', function (Request $request) {
 })->name('data');
 
 // Transaction Session
-Route::apiResource('transaction_sessions', TransactionSessionController::class)->only(['store']);
+Route::apiResource('transaction-sessions', TransactionSessionController::class)->only(['store']);
 
 // Product
 Route::get('/products/lookup', [ProductController::class, 'lookup'])->name('products.lookup');
