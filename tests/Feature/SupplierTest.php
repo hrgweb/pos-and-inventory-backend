@@ -36,10 +36,17 @@ class SupplierTest extends TestCase
 
         $this->putJson(route('suppliers.update', $data['id']), [
             'name' => 'updated megasoft',
-            'address' => 'updated address'
+            'description' => 'update nato',
+            'address' => 'updated address',
+            'contact_no' => 'update sad nato and contact'
         ])
             ->assertCreated();
 
-        $this->assertDatabaseHas('suppliers', ['name' => 'updated megasoft']);
+        $this->assertDatabaseHas('suppliers', [
+            'name' => 'updated megasoft',
+            'description' => 'update nato',
+            'address' => 'updated address',
+            'contact_no' => 'update sad nato and contact'
+        ]);
     }
 }
