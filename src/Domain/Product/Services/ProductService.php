@@ -20,7 +20,8 @@ class ProductService
 
     public function list()
     {
-        return ProductData::collection(Product::paginate());
+        $perPage = 5;
+        return ProductData::collection(Product::latest()->paginate($perPage));
     }
 
     public function saveOrUpdate(): ProductData
