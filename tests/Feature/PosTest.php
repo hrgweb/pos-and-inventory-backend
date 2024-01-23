@@ -14,17 +14,19 @@ class PosTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_fetch_transaction_session_orders_and_suppliers(): void
+    public function test_fetch_transaction_session_and_orders(): void
     {
+        // transaction sessions
         $transaction_session = TransactionSession::factory()->create(['session_no' => '98424233']);
 
-        $orders = Order::factory(4)->create(['transaction_session_no' => '98424233']);
+        // orders
+        Order::factory(4)->create(['transaction_session_no' => '98424233']);
 
-        $this->getJson(route('data', ['transaction_session_no' => $transaction_session->session_no]))
+        $response = $this->getJson(route('data', ['transaction_session_no' => $transaction_session->session_no]))
             ->assertOk();
 
         $this->assertDatabaseHas('transaction_sessions', ['session_no' => '98424233']);
-        $this->assertEquals(4, $orders->count());
+        $this->assertEquals(4, count($response['orders']));
     }
 
     public function test_pos_make_an_order(): void

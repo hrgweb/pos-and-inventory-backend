@@ -29,11 +29,10 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 Route::get('/data', function (Request $request) {
     $transactionSessionNo = $request->input('transaction_session_no');
 
-    return [
+    return response()->json([
         'transaction_session' => TransactionSession::select(['session_no', 'status', 'grand_total', 'amount', 'change', 'created_at'])->where('session_no', $transactionSessionNo)->first(),
         'orders' => OrderService::fetch($transactionSessionNo),
-        'suppliers' => [] // SupplierService::all()
-    ];
+    ], 200);
 })->name('data');
 
 // Transaction Session
