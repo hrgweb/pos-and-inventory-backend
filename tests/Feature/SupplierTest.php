@@ -11,6 +11,15 @@ class SupplierTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_list_of_suppliers():void
+    {
+        Supplier::factory(4)->create();
+
+        $response = $this->getJson(route('suppliers.index'))->assertOk();
+
+        $this->assertEquals(4, count($response['data']));
+    }
+
     public function test_create_a_supplier(): void
     {
         $data = Supplier::factory()->make()->toArray();

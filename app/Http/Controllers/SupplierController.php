@@ -11,6 +11,16 @@ use Inventory\Supplier\Services\SupplierService;
 
 class SupplierController extends Controller
 {
+    public function index()
+    {
+        try {
+            return SupplierService::make()->fetch();
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json($e->getMessage(), 500);
+        }
+    }
+
     public function store(SupplierData $data)
     {
         try {
