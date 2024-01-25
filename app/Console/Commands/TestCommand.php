@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Product;
 use Illuminate\Console\Command;
 use Inventory\Product\Services\ProductService;
+use Laravel\Socialite\Facades\Socialite;
 
 class TestCommand extends Command
 {
@@ -28,6 +29,9 @@ class TestCommand extends Command
      */
     public function handle()
     {
+        dd(Socialite::class);
+
+
         function unique_multidim_array($array, $key)
         {
             $temp_array = array();
