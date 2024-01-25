@@ -53,4 +53,23 @@ class ProductService
             ->OrWhereRaw('barcode like ?', [$search])
             ->get();
     }
+
+    public static function deduction(array $products = []): void
+    {
+        foreach ($products as $product) {
+            $product_id = $product['productId'];
+
+            $stock_qty = (int)Product::where('id', $product_id)->first()?->stock_qty;
+            $stock_deduction = (int)$product['count'];
+            $stock_left = $stock_qty - $stock_deduction;
+
+            $updated = Product::where('id', $product_id)->update(['stock_qty' => $stock_left]);
+
+            if (!$updated) {
+                throw new Exception('product deduction encountered an error.');
+            }
+
+            info('product ' . $product['name'] . ' successfuly deducted.');
+        }
+    }
 }

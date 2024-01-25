@@ -9,6 +9,7 @@ use Inventory\Order\Dto\OrderData;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inventory\Order\Enums\OrderStatus;
+use Inventory\Order\Services\OrderService;
 
 class PosTest extends TestCase
 {
@@ -49,5 +50,25 @@ class PosTest extends TestCase
             ->assertCreated();
 
         $this->assertDatabaseHas('transaction_sessions', ['session_no' => '98424233', 'status' => OrderStatus::VOID]);
+    }
+
+    public function test_make_a_sale(): void
+    {
+        $orders = Order::factory(4)->create(['transaction_session_no' => '98424233', 'subtotal' => 5]);
+
+        $data = [
+            'transaction_session_no' => '869574',
+            'orders' => OrderData::collection($orders)->toArray(),
+            'grand_total' => OrderService::grandTotal($orders),
+            'amount' => 10,
+            'product_count_occurences' => []
+        ];
+
+        dd($data);
+
+        $response = $this->postJson(route('sales.store'), $data)->assertCreated()
+            ->assertJson(['success' => true]);
+
+        $this->assertDatabaseCount('sales', 4);
     }
 }

@@ -1,32 +1,26 @@
 <?php
 
-namespace App\Console\Commands;
+namespace Tests\Unit;
 
-use App\Models\User;
-use App\Models\Product;
-use Illuminate\Console\Command;
-use Inventory\Product\Services\ProductService;
+use Tests\TestCase;
+use App\Models\Order;
+use Inventory\Order\Dto\OrderData;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inventory\Order\Services\OrderService;
+use stdClass;
 
-class TestCommand extends Command
+class OrderTest extends TestCase
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'app:test-command';
+    use RefreshDatabase;
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Command description';
+    public function test_calculate_the_grand_total(): void
+    {
+        $orders = Order::factory(3)->create(['subtotal' => 5]);
 
-    /**
-     * Execute the console command.
-     */
-    public function handle()
+        $this->assertEquals(15, OrderService::grandTotal($orders));
+    }
+
+    public function test_get_the_qty_of_each_product_in_orders(): void
     {
         function unique_multidim_array($array, $key)
         {
@@ -220,5 +214,28 @@ class TestCommand extends Command
         $orders = unique_multidim_array($orders, 'id');
 
         dd($orders);
+
+        $newOrders = [];
+
+        $ordersCount = count($orders);
+
+        for ($i = 0; $i < $ordersCount; $i++) {
+            $product = $orders[$i]['product'];
+
+            $newProduct = new stdClass;
+            $newProduct->id = $product['id'];
+            $newProduct->name = $product['name'];
+            $newProduct->qty = 0;
+
+            for ($j = 0; $j < $ordersCount; $j++) {
+                $product2 = $orders[$j]['product'];
+
+                if ($product['id'] === $product2['id']) {
+                    $newProduct->qty++;
+                }
+            }
+
+            array_push($newOrders, $newProduct);
+        }
     }
 }

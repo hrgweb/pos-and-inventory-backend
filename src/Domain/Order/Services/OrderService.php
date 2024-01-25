@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\Product;
 use Inventory\Order\Dto\OrderData;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Collection;
 
 class OrderService
 {
@@ -57,5 +58,10 @@ class OrderService
         Log::info('1 order saved.');
 
         return OrderData::from($order);
+    }
+
+    public static function grandTotal(Collection $orders): int
+    {
+        return (int)$orders->reduce(fn (int $carry, Order $order) => $carry + $order['subtotal'], 0);
     }
 }
