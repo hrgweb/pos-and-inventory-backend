@@ -26,17 +26,7 @@ class ProductService
 
     public function saveOrUpdate(): ProductData
     {
-        $id = $this->request['id'] ??= 0;
-
-        if ($id > 0) {
-            $update = Product::where('id', $id)->update($this->request);
-
-            if ($update) {
-                return ProductData::from($this->request);
-            }
-        }
-
-        return ProductData::from(Product::create($this->request));
+        return ProductData::from(Product::updateOrCreate(['id' => $this->request['id']], $this->request));
     }
 
     public function remove()
