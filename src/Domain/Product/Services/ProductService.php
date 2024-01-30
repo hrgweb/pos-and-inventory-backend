@@ -47,17 +47,13 @@ class ProductService
     public static function deduction(array $products = []): void
     {
         foreach ($products as $product) {
-            $product_id = $product['productId'];
+            $product_id = $product['id'];
 
             $stock_qty = (int)Product::where('id', $product_id)->first()?->stock_qty;
-            $stock_deduction = (int)$product['count'];
+            $stock_deduction = (int)$product['qty'];
             $stock_left = $stock_qty - $stock_deduction;
 
-            $updated = Product::where('id', $product_id)->update(['stock_qty' => $stock_left]);
-
-            if (!$updated) {
-                throw new Exception('product deduction encountered an error.');
-            }
+            Product::where('id', $product_id)->update(['stock_qty' => $stock_left]);
 
             info('product ' . $product['name'] . ' successfuly deducted.');
         }

@@ -24,8 +24,8 @@ return new class extends Migration
             $table->string('product_name')->index()->nullable();
             $table->text('product_description')->nullable();
             $table->decimal('selling_price', 15, 2);
-            $table->unsignedBigInteger('qty')->default(1);
-            $table->decimal('subtotal', 15, 2);
+            $table->unsignedBigInteger('qty')->default(1)->nullable();
+            $table->decimal('subtotal', 15, 2)->nullable();
             $table->timestamps();
         });
     }

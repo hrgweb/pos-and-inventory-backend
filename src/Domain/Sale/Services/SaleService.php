@@ -30,7 +30,7 @@ class SaleService
 
         // no orders made
         if ($ordersCount <= 0) {
-            return response()->json('please make an order.', 500);
+            return response()->json('please make an order.', 402);
         }
 
         DB::beginTransaction();

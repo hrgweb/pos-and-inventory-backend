@@ -16,6 +16,9 @@ class SaleData extends Data
         public float $grand_total,
         public float $amount,
         public ?float $change,
+        public ?float $selling_price,
+        public ?int $qty,
+        public ?int $subtotal,
         public ?array $product_count_occurences
     ) {
     }
