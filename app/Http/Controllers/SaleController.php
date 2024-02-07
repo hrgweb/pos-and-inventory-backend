@@ -6,6 +6,7 @@ use Exception;
 use Inventory\Sale\Dto\SaleData;
 use Illuminate\Support\Facades\Log;
 use Inventory\Sale\Services\SaleService;
+use Inventory\Order\Class\Order as OrderValue;
 
 class SaleController extends Controller
 {
@@ -13,6 +14,7 @@ class SaleController extends Controller
     {
         try {
             $data = $data->toArray();
+            $data['product_count_occurences'] = OrderValue::getQtyOfEachProducts($data['orders']);
 
             if ($data['amount'] < $data['grand_total']) {
                 $errorMsg = 'amount must greater than grand total.';

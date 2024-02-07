@@ -45,7 +45,7 @@ class Order
                 }
             }
 
-            array_push($listOfOrders, $newProduct);
+            array_push($listOfOrders, (array)$newProduct);
         }
 
         return $listOfOrders;
