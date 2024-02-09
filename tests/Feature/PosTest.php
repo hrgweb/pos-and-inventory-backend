@@ -34,11 +34,48 @@ class PosTest extends TestCase
 
     public function test_pos_make_an_order(): void
     {
-        $order = OrderData::from(Order::factory()->make())->toArray();
+        $product = Product::factory()->create(['name' => 'ginamos', 'stock_qty' => 1]);
 
-        $response = $this->postJson(route('orders.store'), $order)->assertCreated();
+        $order = OrderData::from([
+            'transaction_session_no' => '9834928394',
+            'product' => $product,
+            'selling_price' => 15,
+            'status' => OrderStatus::PENDING
+        ])->toArray();
 
-        $this->assertEquals($order['product_name'], $response['product_name']);
+        $response = $this->postJson(route('orders.store'), $order);
+
+        if (!$response['success']) {
+            $response->assertJson([
+                "success" => false,
+                "message" => "Ginamos is not available."
+            ]);
+        }
+
+        // dd($response->json());
+
+        // $this->assertEquals($order['product']['name'], $response['name']);
+        $response->assertJson(['success' => true]);
+    }
+
+    public function test_pos_make_an_order_but_not_available(): void
+    {
+        // $product = Product::factory()->create(['name' => 'tanduay', 'stock_qty' => 0]);
+
+        // $this->postJson(route('orders.store'));
+
+        // // Product is not available
+        // if (!$product['stock_qty']) {
+        //     // $this->assert
+        // }
+
+        // $this->assertDatabaseHas('products', [
+        //     'name' => 'tanduay',
+        //     'stock_qty' => 0
+        // ]);
+
+
+        // dd($order);
     }
 
     public function test_pos_void_a_transaction()

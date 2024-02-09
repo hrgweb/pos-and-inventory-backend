@@ -8,6 +8,7 @@ use App\Models\Product;
 use Inventory\Order\Dto\OrderData;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\JsonResponse;
 
 class OrderService
 {
@@ -25,7 +26,7 @@ class OrderService
         return OrderData::collection(Order::where('transaction_session_no', $transactionSessionNo)->get());
     }
 
-    public function save(): OrderData
+    public function save(): OrderData | array
     {
         $product = $this->request['product'];
 
@@ -35,10 +36,10 @@ class OrderService
         // check the stock qty is empty
         if ($productStockQty <= 0) {
             $msg = ucfirst($product['name']) . ' is not available.';
-            return response()->json([
-                'errors' => [$msg],
+            return [
+                'success' => false,
                 'message' => $msg
-            ], 404);
+            ];
         }
 
         // the product has stocks left
@@ -57,7 +58,7 @@ class OrderService
 
         Log::info('1 order saved.');
 
-        return OrderData::from($order);
+        return ['success' => true, 'data' => OrderData::from($order)];
     }
 
     public static function grandTotal(Collection $orders): int

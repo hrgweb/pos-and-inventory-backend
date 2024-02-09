@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Inventory\Order\Dto\OrderData;
 use Illuminate\Support\Facades\Log;
 use Inventory\Order\Services\OrderService;
@@ -13,10 +14,10 @@ class OrderController extends Controller
     {
         try {
             $orders = OrderService::make($data->toArray())->save();
-            return response()->json($orders, 201);
+            return response()->json($orders);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return response()->json($e->getMessage(), 500);
+            return response()->json($e->getMessage(), JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }
