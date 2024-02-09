@@ -2,16 +2,17 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ProductResource\Pages;
-use App\Filament\Resources\ProductResource\RelationManagers;
-use App\Models\Product;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\Product;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\ProductResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\ProductResource\RelationManagers;
 
 class ProductResource extends Resource
 {
@@ -26,6 +27,10 @@ class ProductResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\Select::make('supplier_id')
+                    ->native(false)
+                    ->required()
+                    ->relationship(name: 'supplier', titleAttribute: 'name'),
                 Forms\Components\Textarea::make('description')
                     ->maxLength(65535)
                     ->columnSpanFull(),
@@ -39,12 +44,13 @@ class ProductResource extends Resource
                     ->required()
                     ->numeric(),
                 Forms\Components\TextInput::make('reorder_level')
-                    ->required()
+                    ->numeric(),
+                Forms\Components\TextInput::make('reorder_level_danger')
                     ->numeric(),
                 Forms\Components\TextInput::make('barcode')
                     ->maxLength(255),
-                Forms\Components\Toggle::make('is_available')
-                    ->required(),
+                // Forms\Components\Toggle::make('is_available')
+                //     ->required(),
             ]);
     }
 
@@ -53,7 +59,11 @@ class ProductResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
+                    ->searchable()
+                    ->label('Product Name'),
+                Tables\Columns\TextColumn::make('supplier.name')
+                    ->searchable()
+                    ->label('Supplier Name'),
                 Tables\Columns\TextColumn::make('cost_price')
                     ->numeric()
                     ->sortable(),
@@ -62,14 +72,24 @@ class ProductResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('stock_qty')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->color(function (Model $model): string {
+                        if ($model->stock_qty <= $model->reorder_level_danger) {
+                            return 'danger';
+                        }
+                        if ($model->stock_qty <= $model->reorder_level) {
+                            return 'warning';
+                        }
+                        return 'success';
+                    })
+                    ->badge(),
                 Tables\Columns\TextColumn::make('reorder_level')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('barcode')
                     ->searchable(),
-                Tables\Columns\IconColumn::make('is_available')
-                    ->boolean(),
+                // Tables\Columns\IconColumn::make('is_available')
+                //     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -86,9 +106,9 @@ class ProductResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 
