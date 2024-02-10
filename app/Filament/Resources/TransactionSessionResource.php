@@ -92,6 +92,7 @@ class TransactionSessionResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 // Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -113,7 +114,8 @@ class TransactionSessionResource extends Resource
         return [
             'index' => Pages\ListTransactionSessions::route('/'),
             'create' => Pages\CreateTransactionSession::route('/create'),
-            'edit' => Pages\EditTransactionSession::route('/{record}/edit'),
+            'view' => Pages\ViewTransactionSession::route('/{record}'),
+            // 'edit' => Pages\EditTransactionSession::route('/{record}/edit'),
         ];
     }
 }
