@@ -21,6 +21,8 @@ class TransactionSessionResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $navigationLabel = 'Session No';
+
     public static function form(Form $form): Form
     {
         return $form

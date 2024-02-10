@@ -2,33 +2,37 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\SaleResource\Pages;
+use App\Filament\Resources\SaleResource\RelationManagers;
+use App\Models\Sale;
 use Filament\Forms;
-use Filament\Tables;
-use App\Models\Order;
 use Filament\Forms\Form;
-use Filament\Tables\Table;
 use Filament\Resources\Resource;
-use Illuminate\Database\Eloquent\Model;
+use Filament\Tables;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use App\Filament\Resources\OrderResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\OrderResource\RelationManagers;
-use Inventory\Order\Enums\OrderStatus;
 
-class OrderResource extends Resource
+class SaleResource extends Resource
 {
-    protected static ?string $model = Order::class;
+    protected static ?string $model = Sale::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?int $navigationSort = 1;
-
     protected static ?string $navigationGroup = 'Sales Management';
+
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
+                Forms\Components\TextInput::make('order_id')
+                    ->required()
+                    ->numeric(),
+                Forms\Components\TextInput::make('product_id')
+                    ->required()
+                    ->numeric(),
                 Forms\Components\TextInput::make('transaction_session_no')
                     ->required()
                     ->maxLength(255),
@@ -41,11 +45,10 @@ class OrderResource extends Resource
                     ->required()
                     ->numeric(),
                 Forms\Components\TextInput::make('qty')
-                    ->numeric(),
+                    ->numeric()
+                    ->default(1),
                 Forms\Components\TextInput::make('subtotal')
                     ->numeric(),
-                Forms\Components\TextInput::make('status')
-                    ->maxLength(255),
             ]);
     }
 
@@ -53,9 +56,15 @@ class OrderResource extends Resource
     {
         return $table
             ->columns([
+                // Tables\Columns\TextColumn::make('order_id')
+                //     ->numeric()
+                //     ->sortable(),
                 Tables\Columns\TextColumn::make('transaction_session_no')
                     ->searchable()
                     ->label('Session no'),
+                // Tables\Columns\TextColumn::make('product_id')
+                //     ->numeric()
+                //     ->sortable(),
                 Tables\Columns\TextColumn::make('product_name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('selling_price')
@@ -67,14 +76,6 @@ class OrderResource extends Resource
                 // Tables\Columns\TextColumn::make('subtotal')
                 //     ->numeric(decimalPlaces: 2, decimalSeparator: '.', thousandsSeparator: ',')
                 //     ->sortable(),
-                Tables\Columns\TextColumn::make('status')
-                    ->searchable()
-                    ->badge()
-                    ->color(fn (Model $model): string => match ($model->status) {
-                        OrderStatus::COMPLETED->value => 'success',
-                        OrderStatus::PENDING->value => 'warning',
-                        OrderStatus::VOID->value => 'success'
-                    }),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -108,10 +109,10 @@ class OrderResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListOrders::route('/'),
-            'create' => Pages\CreateOrder::route('/create'),
-            // 'view' => Pages\ViewOrder::route('/{record}'),
-            // 'edit' => Pages\EditOrder::route('/{record}/edit'),
+            'index' => Pages\ListSales::route('/'),
+            'create' => Pages\CreateSale::route('/create'),
+            // 'view' => Pages\ViewSale::route('/{record}'),
+            // 'edit' => Pages\EditSale::route('/{record}/edit'),
         ];
     }
 }
